@@ -1,0 +1,16 @@
+actions:
+- name: createEvent
+  definition:
+    kind: synchronous
+    handler: http://host.docker.internal:3000/createEvent
+    forward_client_headers: true
+  permissions:
+  - role: user
+custom_types:
+  enums: []
+  input_objects:
+  - name: eventInput
+  - name: attendeeIds
+  objects:
+  - name: eventOutput
+  scalars: []

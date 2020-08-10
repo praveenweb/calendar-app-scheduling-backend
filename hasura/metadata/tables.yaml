@@ -1,0 +1,140 @@
+- table:
+    schema: public
+    name: event
+  array_relationships:
+  - name: attendees
+    using:
+      foreign_key_constraint_on:
+        column: event_id
+        table:
+          schema: public
+          name: event_attendee
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        created_by:
+          _eq: X-Hasura-User-Id
+      set:
+        created_by: x-hasura-User-Id
+      columns:
+      - created_at
+      - end_date_time_utc
+      - is_all_day
+      - is_recurring
+      - recurrence_pattern
+      - start_date_time_utc
+      - status
+      - title
+      - updated_at
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - created_at
+      - created_by
+      - end_date_time_utc
+      - id
+      - is_all_day
+      - is_recurring
+      - recurrence_pattern
+      - start_date_time_utc
+      - status
+      - title
+      - updated_at
+      filter: {}
+- table:
+    schema: public
+    name: event_attendee
+  object_relationships:
+  - name: event
+    using:
+      foreign_key_constraint_on: event_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        _or:
+        - event:
+            created_by:
+              _eq: X-Hasura-User-Id
+        - user_id:
+            _eq: X-Hasura-User-Id
+      columns:
+      - created_at
+      - event_id
+      - status
+      - updated_at
+      - user_id
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - user_id
+      - status
+      - created_at
+      - updated_at
+      - event_id
+      - id
+      filter:
+        _or:
+        - event:
+            created_by:
+              _eq: X-Hasura-User-Id
+        - user_id:
+            _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - status
+      - updated_at
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+      check: null
+- table:
+    schema: public
+    name: user
+  array_relationships:
+  - name: event_attendees
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: event_attendee
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        id:
+          _eq: X-Hasura-User-Id
+      columns:
+      - created_at
+      - email
+      - name
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - email
+      - id
+      - name
+      - created_at
+      filter: {}
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - name
+      filter:
+        id:
+          _eq: X-Hasura-User-Id
+      check: null

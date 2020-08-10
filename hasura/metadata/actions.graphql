@@ -1,0 +1,28 @@
+type Mutation {
+  createEvent (
+    object: eventInput!
+  ): eventOutput
+}
+
+
+
+
+input eventInput {
+  created_by : Int
+  end_date_time_utc : timestamptz
+  is_all_day : Boolean
+  is_recurring : Boolean
+  recurrence_pattern : String
+  start_date_time_utc : timestamptz
+  title : name
+  attendees : [attendeeIds]
+}
+
+input attendeeIds {
+  id : Int
+}
+
+type eventOutput {
+  id : uuid!
+}
+
